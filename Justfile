@@ -7,8 +7,9 @@ check:
   @cargo check
   @cargo +nightly clippy
 
-build_release: check
+build_release: build
   @cargo build --release
+  @cp target/release/jumpto .
 
 test:
   @cargo test
