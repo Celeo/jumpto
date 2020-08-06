@@ -10,6 +10,7 @@ check:
 build_release: build
   @cargo build --release
   @cp target/release/jumpto .
+  @strip ./jumpto
 
 test:
   @cargo test
