@@ -21,25 +21,24 @@ use commands::{command_add, command_list, command_remove};
 enum Command {
     /// List all stored directories
     List {},
-    /// Add another directory to quickly jump to. 'where_to' is optional;
+    /// Add another directory to quickly jump to. 'name' is optional;
     /// it will default to your current directory
-    Add {
-        name: String,
-        where_to: Option<String>,
-    },
+    Add { name: String, path: Option<String> },
     /// Remove a saved directory
     Remove { name: String },
 }
 
 #[derive(Debug, StructOpt)]
 struct CliOptions {
+    /// Whether to enable debug logging
     #[structopt(short, long)]
     debug: bool,
 
     #[structopt(subcommand)]
     cmd: Option<Command>,
 
-    where_to: Option<String>,
+    /// Name of the stored directory to jump to
+    name: Option<String>,
 }
 
 /// Setup logging.
@@ -83,8 +82,8 @@ fn main() {
     let mut config = Config::load_from_disk().expect("Could not load/create config");
     debug!("Config: {:?}", config);
 
-    if let Some(where_to) = cli_options.where_to {
-        if let Some(path) = config.directories.get(&where_to) {
+    if let Some(name) = cli_options.name {
+        if let Some(path) = config.directories.get(&name) {
             info!("{} {}", "Jumping to".green().bold(), path.cyan().bold());
             if let Err(e) = env::set_current_dir(path) {
                 error!("Could not change directories: {}", e);
@@ -99,7 +98,7 @@ fn main() {
                 and then 'cd' there.
         */
         } else {
-            error!("Unknown jump name '{}'", where_to);
+            error!("Unknown jump name '{}'", name);
             info!("You can see the paths you have saved with 'jumpto list'")
         }
         return;
@@ -114,8 +113,8 @@ fn main() {
                 error!("Could not list paths: {}", e);
             }
         }
-        Some(Command::Add { name, where_to }) => {
-            if let Err(e) = command_add(&mut config, &name, &where_to) {
+        Some(Command::Add { name, path }) => {
+            if let Err(e) = command_add(&mut config, &name, &path) {
                 error!("Could not add new path: {}", e);
             }
         }

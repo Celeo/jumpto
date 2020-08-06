@@ -20,12 +20,8 @@ pub(crate) fn command_list(config: &Config) -> Result<()> {
     Ok(())
 }
 
-pub(crate) fn command_add(
-    config: &mut Config,
-    name: &str,
-    where_to: &Option<String>,
-) -> Result<()> {
-    let path = match where_to {
+pub(crate) fn command_add(config: &mut Config, name: &str, path: &Option<String>) -> Result<()> {
+    let path = match path {
         Some(p) => p.to_owned(),
         None => format!("{}", current_dir()?.display()),
     };
