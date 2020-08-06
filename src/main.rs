@@ -9,13 +9,15 @@ use fern::{
     Dispatch,
 };
 use log::{debug, error, info, LevelFilter};
-use std::{env, io};
+use std::{io, path::Path};
 use structopt::StructOpt;
 
 mod config;
 use config::Config;
 mod commands;
 use commands::{command_add, command_list, command_remove};
+
+const SCRIPT: &str = include_str!("jt");
 
 #[derive(Debug, StructOpt)]
 enum Command {
@@ -26,6 +28,8 @@ enum Command {
     Add { name: String, path: Option<String> },
     /// Remove a saved directory
     Remove { name: String },
+    /// Show the Bash script that needs to be used alongside this binary
+    Script {},
 }
 
 #[derive(Debug, StructOpt)]
@@ -82,21 +86,15 @@ fn main() {
     let mut config = Config::load_from_disk().expect("Could not load/create config");
     debug!("Config: {:?}", config);
 
+    colored::control::set_override(true);
+
     if let Some(name) = cli_options.name {
         if let Some(path) = config.directories.get(&name) {
-            info!("{} {}", "Jumping to".green().bold(), path.cyan().bold());
-            if let Err(e) = env::set_current_dir(path) {
-                error!("Could not change directories: {}", e);
-                return;
+            if !Path::new(path).exists() {
+                error!("Directory '{}' does not exist", path);
+            } else {
+                info!("{} {}", "Jumping to".green().bold(), path.cyan().bold());
             }
-        /*
-            TODO
-                Successful directory change.
-                Now need to set up the shell wrapper around this binary so
-                that the shell will take the output of this, determine
-                whether or not to take that string as the new directory,
-                and then 'cd' there.
-        */
         } else {
             error!("Unknown jump name '{}'", name);
             info!("You can see the paths you have saved with 'jumpto list'")
@@ -122,6 +120,9 @@ fn main() {
             if let Err(e) = command_remove(&mut config, &name) {
                 error!("Could not remove path: {}", e);
             }
+        }
+        Some(Command::Script {}) => {
+            info!("{}", SCRIPT);
         }
     }
 }

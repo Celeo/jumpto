@@ -14,7 +14,26 @@ cargo install jumpto
 
 ## Using
 
-TBD
+Since shells spawn subprocesses for running commands, there's an extra step required to set up this program. Running
+
+```sh
+jumpto script
+```
+
+shows a Bash script that takes the runtime arguments, runs the program, looks to see if it needs to change directory, and then does so. You can name this script 'jt' with something like:
+
+```sh
+jumpto script > ~/.cargo/bin/jt
+chmod +x ~/.cargo/bin/jt
+```
+
+Then, calling the program can be done via:
+
+```sh
+source jt <arguments>
+```
+
+The next improvement will remove the necessity to include 'source ' when calling the script.
 
 ## Developing
 

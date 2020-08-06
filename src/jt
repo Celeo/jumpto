@@ -1,0 +1,15 @@
+#!/bin/bash
+
+if [[ "$0" == "$BASH_SOURCE" ]]; then
+  echo "This script must be sourced"
+  exit
+fi
+
+OUTPUT=`./jumpto $@`
+echo "$OUTPUT"
+
+GO_TO=`echo "$OUTPUT" | awk '/^.*Jumping to/ {print $3}' | sed -r "s/\x1B\[([0-9]{1,3}(;[0-9]{1,2})?)?[mGK]//g"`
+
+if [ ! -z "$GO_TO" ]; then
+  cd "$GO_TO"
+fi
