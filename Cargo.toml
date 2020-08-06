@@ -1,0 +1,27 @@
+[package]
+name = "jumpto"
+version = "0.1.0"
+authors = ["Celeo <mattboulanger@fastmail.com>"]
+edition = "2018"
+description = "Simple CLI utility to navigate to directories"
+readme = "README.md"
+homepage = "https://github.com/celeo/jumpto"
+repository = "https://github.com/celeo/jumpto"
+license = "MIT OR Apache-2.0"
+exclude = [
+  ".github"
+]
+keywords = [
+  "jump",
+  "navigation",
+  "directory"
+]
+categories = [
+  "command-line-utilies"
+]
+
+[dependencies]
+anyhow = "1.0.32"
+fern = "0.6.0"
+log = "0.4.11"
+structopt = "0.3.16"
