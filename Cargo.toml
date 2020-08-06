@@ -22,6 +22,11 @@ categories = [
 
 [dependencies]
 anyhow = "1.0.32"
-fern = "0.6.0"
+colored = "2.0.0"
+fern = { version = "0.6.0", features = ["colored"]}
+home = "0.5.3"
 log = "0.4.11"
+prettytable-rs = "0.8.0"
+serde = { version = "1.0.114", features = ["derive"] }
+serde_json = "1.0.57"
 structopt = "0.3.16"
